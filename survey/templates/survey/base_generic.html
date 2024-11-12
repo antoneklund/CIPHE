@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Survey</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/survey.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+</head>
+
+<body>
+
+    <header class="page-header bg-primary text-white">
+        <div class="container">
+            <h1><a href="/" class="text-white text-decoration-none">Text Grouping Survey</a></h1>
+        </div>
+    </header>
+
+    {% block content %}
+    {% endblock %}
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-eUGU9iKdQg5O2ra8dEXxuPruXttI2hA5P9N8Rfxbe9a9sACj2RHEFZLEF3aCQem5"
+        crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $('.article-label').click(function () {
+                var articleId = $(this).data('article-id');
+                var articleBody = $(this).data('article-body');
+        
+                // Function to decode Unicode escape sequences (e.g., \u0027 -> ')
+                function decodeUnicode(str) {
+                    return str.replace(/\\u([\dA-F]{4})/gi, function (match, grp) {
+                        return String.fromCharCode(parseInt(grp, 16));
+                    });
+                }
+        
+                // Decode any Unicode escapes in the body text
+                var decodedBody = decodeUnicode(articleBody);
+        
+                // Handle both \n and Unicode newline (\u000A) characters
+                const formattedText = decodedBody.replace(/\\n/g, '\n').replace(/\n/g, '<br>');
+        
+                // Split the text at the first newline to make the first part bold
+                var firstNewlineIndex = formattedText.indexOf('<br>');
+                var boldText, restOfText;
+        
+                if (firstNewlineIndex !== -1) {
+                    // Text before the first newline
+                    boldText = '<strong>' + formattedText.substring(0, firstNewlineIndex) + '</strong>';
+                    // Rest of the text after the first newline
+                    restOfText = formattedText.substring(firstNewlineIndex);
+                } else {
+                    // If no newline is found, make the whole text bold
+                    boldText = '<strong>' + formattedText + '</strong>';
+                    restOfText = '';
+                }
+        
+                // Combine the bold and non-bold parts
+                const finalText = boldText + restOfText;
+        
+                // Display the final formatted text in the article body container
+                $('#article-body').html(finalText);
+            });
+        });
+
+        $(document).ready(function() {
+            $('.form-check-input').on('change', function() {
+                const label = $(this).next('.form-check-label');
+                if ($(this).is(':checked')) {
+                    label.css({
+                        'color': 'gray', // Set your preferred color
+                        'text-decoration': 'line-through'
+                    });
+                } else {
+                    label.css({
+                        'color': '', // Revert to original color (or set any other color)
+                        'text-decoration': 'none'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

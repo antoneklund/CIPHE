@@ -1,0 +1,31 @@
+# Python
+*.pyc
+*~
+__pycache__
+*.py#
+
+# Env
+.venv/
+.vscode/
+.nondjf/
+.env
+
+# Database
+*.sqlite3
+
+# Static folder at project root
+/static/
+/data/
+/old_migrations/
+
+# Extensions
+*.csv
+*.json
+*.txt
+*.png
+
+/survey/migrations/
+/old_databases/
+
+# Ruff cache
+.ruff_cache

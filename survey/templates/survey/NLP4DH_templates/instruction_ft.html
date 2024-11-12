@@ -1,0 +1,59 @@
+{% extends "survey/base_generic.html" %}{% load static %}
+
+{%block content%}
+
+<main class="container mt-4">
+    <div class="container mt-4">
+        <h4>Introduction</h4>
+        <p class="lead">The evaluation tool is based on the assumption that the texts in each group have something in common. It could be a theme (e.g., Football, Politics, Natural Disasters, a person, a city), or an event (e.g., a particular football match, an election, a hurricane). Sometimes, it is something else (e.g., opinions, formality) which may be more difficult to identify but will still give insight into the AI models.</p>
+      
+        <p class="lead">Your task is to explore the group and asses whether the articles have anything in common. The models may have made mistakes when grouping the texts. If so, you should remove some texts from the group and name what is common in the remaining texts.</p>
+      
+        <h4 class="mt-5">Explore the Group:</h4>
+        <ul>
+          <li>Read all the titles carefully.</li>
+          <li>Click on the title to show the text body of an article if you are unsure what it is about.</li>
+          <li>Make up your mind what is most unifying for these articles.</li>
+          <li>Exclude articles that don't fit with the rest of the group.</li>
+        </ul>
+      
+        <h4>
+            Name the group:
+        </h4>
+        <ul>
+            <li>Write a descriptive title of the group.</li>
+            <li>Examples: "Football", "Eurovision Song contest 2022", "First-person stories"</li>
+        </ul>
+        <!-- <h4>Unifying Feature:</h4>
+        <ul>
+            <li>Select one of the following unifying feature types:</li>
+            <ul>
+                <li><strong>Event:</strong> Something placed in time (e.g., a particular football match, an election, a hurricane).</li>
+                <li><strong>Theme:</strong> Not bound by time (e.g., Football, Politics, Natural Disasters, a person, a city).</li>
+                <li><strong>Other:</strong> Something unites the articles but is not an Event or a Theme (e.g., language style, opinion, formality).</li>
+                <li><strong>None:</strong> There are no features unifying at least half of the articles.</li>
+            </ul>
+            
+            <li>Name the group.</li>
+            <li>If you selected None, de-select all the articles and name the group “None”.</li>
+            <li>Optionally write a comment about why you are excluding some articles.</li>
+        </ul> -->
+        <h4>Rate the complexity of the task:</h4>
+        <ul>
+            <li>You are asked to rate your agreement to statements about your experience assessing the group.</li>
+        </ul>
+      
+        <h4 class="mt-5">Important Note:</h4>
+        <ul>
+          <li>Please do not participate in this survey using your phone as the survey elements will not display properly. If you are using a tablet, please tilt it to a horizontal view.</li>
+          <li>Please avoid using the back-button or the refreshing the page in your browser to prevent unexpected survey behavior.</li>
+        </ul>
+        <h5>Thank you for your participation!</h5>
+      </div>
+    <!-- <div class="col-md-6">
+        <img src="{% static 'images/UF_app.png' %}" class="img-fluid">
+    </div> -->
+    <a href="{% url 'survey_page' %}" class="btn btn-primary mt-3">Start survey</a>
+</main>
+
+{%endblock%}

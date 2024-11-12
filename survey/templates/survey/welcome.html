@@ -1,0 +1,28 @@
+{% extends "survey/base_generic.html" %}{% load static %}
+
+{%block content%}
+<main class="container mt-4">
+    <div class="welcome">
+        <h4>Welcome!</h4>
+        <p class="lead">Thank you for participating in this study! Your input is helping us develop transparent ways of evaluating AI.</p>
+        AI models can be used to organize huge amounts of text documents. To the human eye it is not always obvious which features of the texts an AI model has cared about. Hence we see a need for a practical method for humans to evaluate how AI models organize texts. 
+        <br><br>
+        For this study such AI models have been applied to group news and blog articles. Your role in this study is to test an evaluation tool on these groups, and to assess whether the groups make sense. You are given 8 such groups for evaluation. The articles are in English and published in the last two weeks.
+        <br><br>
+        Your answers are anonymous and will not be used as training data for models. By agreeing to participate in this study, you consent to have your anonymous responses be stored at Umeå University and included in any research paper using this data.
+        <br><br>
+        For further questions or comments, contact the principal investigator Anton Eklund at anton.eklund01@umu.se.
+        <form id="prolificForm" class="mt-3" action="{% url 'welcome' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="prolific_id">Enter your Prolific ID:</label>
+                <input type="text" class="form-control" id="prolific_id" name="prolific_id">
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">I consent</button>
+        </form>
+    </div>
+    <!-- <a href="{% url 'instruction' %}" class="btn btn-primary mt-3">I consent</a> -->
+</main>
+
+{% endblock %}

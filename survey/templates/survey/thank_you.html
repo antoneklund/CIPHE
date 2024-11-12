@@ -1,0 +1,35 @@
+{% extends "survey/base_generic.html" %}{% load static %}
+
+{%block content%}
+
+    <main class="container">
+      <h2>Thank you for participating!</h2>
+      <h4>You gave this AI model a score of: {{ total_score }}</h4>
+      <h5>Our pilot study gave the score: 0.89</h5>
+
+      <h4 class="text-blue">Your prolific completion code: C18I5WN6</h4>
+      <a href="https://app.prolific.com/submissions/complete?cc=C18I5WN6">Link back to prolific: CC=C18I5WN6</a>
+      <h4>If you have any comments about the survey or the groups that you want to share, please write a message on Prolific.</h4>
+
+      <h2>Detailed Responses:</h2>
+      <ul>
+        {% for uf_response, likert_response, score in responses %} <!-- characteristics_response,  -->
+        <h6>Group name: {{ uf_response.text_answer }}</h6>
+        <!-- <p>Category: {{ uf_response.category }}</p> -->
+        <!-- <p>Comment for excluding: {{ uf_response.excluded }}</p> -->
+        <li>
+          Inclusion: {{ likert_response.inclusion }}, Naming: {{ likert_response.naming }}, Opinion: {{ likert_response.opinion}}, Negative emotion: {{ likert_response.emotion }}, Engaging: {{ likert_response.interest }}, Similarity: {{ likert_response.style }}
+        </li>
+        <!-- <li>
+          Theme: {{ characteristics_response.theme }}, Simplicity: {{ characteristics_response.opinion }}, Naming: {{ characteristics_response.emotion}}
+        </li> -->
+        <li>Score for this grouping: {{ score }}</li>
+        <br><br>
+        {% endfor %}
+      </ul>
+      <form method="post" action="{% url 'thank_you' %}" class="mt-4">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary" type="action" value="back">Back</button>
+      </form>
+    </main>
+    {%endblock%}

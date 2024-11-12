@@ -1,0 +1,72 @@
+{% extends "survey/base_generic.html" %}{% load static %}
+
+{%block content%}
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6">
+
+                <form method="post" action="{% url 'survey_page' %}" class="mt-4">
+                    {% csrf_token %}
+                    <div style="display: none">
+                        <input type=text name="form_token" value="{{ form_token }}">
+                    </div>
+                    <div class="article-list mt-3">
+                        <h5>1. Explore the group</h5>
+                        <ul>
+                            <li>Read all the titles carefully.</li>
+                            <li>Click on the title to show the text body of an article if you are unsure what it is about.</li>
+                            <li>De-select articles that don't fit with the rest of the group.</li>
+                        </ul>
+                        {% for article in articles %}
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="{{ article.id }}" name="article_ids" value="{{ article.id }}" checked>
+                                <label class="form-check-label article-label" data-article-id="{{ article.id }}" data-article-body="{{ article.body|escapejs|safe }}">
+                                    {{ article.title }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <h5>2. Define the group</h5>
+                    <table class="table">
+                        <p><strong>a. </strong>Select one of the following general categories that you think the group fits under:</p>
+                        {{ naming_form.category}}
+                        <br><br>
+                        <p><strong>b. </strong>Give a descriptive name to the group: </p>
+                        {{ naming_form.text_answer }}
+                    </div>
+                    <h5>3. Indicate to which extent you agree with the following statements:</h5>
+                    <table class="table mt-3">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Strongly Disagree</th>
+                                <th>Disagree</th>
+                                <th>Neutral</th>
+                                <th>Agree</th>
+                                <th>Strongly Agree</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for field in likert_form %}
+                                <tr>
+                                    <td>{{ field.label_tag }}</td>
+                                    {% for radio in field %}
+                                        <td>{{ radio.tag }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <button type="submit" class="btn btn-primary">Next</button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div class="article-body-container">
+                    <div id="article-body" class="border p-3">CLICK ON AN ARTICLE TITLE TO VIEW THE TEXT HERE</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {%endblock%}

@@ -1,0 +1,62 @@
+{% extends "survey/base_generic.html" %}{% load static %}
+
+{%block content%}
+<main class="container mt-4">
+    <div class="container mt-4">
+        <h4>Introduction</h4>
+        <p class="lead">The evaluation tool is based on the assumption that the texts in each group have something in common. It could be a theme (e.g., Football, Politics, Natural Disasters, a person, a city), or an event (e.g., a particular football match, an election, a hurricane). Sometimes, it is something else (e.g., opinions, formality) which may be more difficult to identify but will still give insight into the AI models.</p>
+      
+        <p class="lead">Your task is to explore the group and assess whether the articles have anything in common. The models may have made mistakes when grouping the texts. If so, you should remove some texts from the group and name what is common in the remaining texts.</p>
+      
+        <h4 class="mt-5">Explore the Group:</h4>
+        <ul>
+          <li>Read all the titles carefully.</li>
+          <li>Click on the title to show the text body of an article if you are unsure what it is about.</li>
+          <li>Make up your mind what is most unifying for these articles.</li>
+          <li>Exclude articles that don't fit with the rest of the group.</li>
+        </ul>
+      
+        <h4>Define the group:</h4>
+        <ul>
+            <li>Select one of the following general categories that you think the group fits under:</li>
+            <ul>
+                 <li>Culture</li>
+                 <li>Entertainment</li>
+                 <li>Politics</li>
+                 <li>Crime</li>
+                 <li>War</li>
+                 <li>Lifestyle</li>
+                 <li>Science</li>
+                 <li>Home & Garden</li>
+                 <li>Sports</li>
+                 <li>Business & Finance</li>
+                 <li>Personal Finance</li>
+                 <li>Automotive</li>
+                 <li>Weather</li>
+                 <li>Technology</li>
+                 <li>Environment</li>
+                 <li>Real Estate</li>
+                 <li>Other</li>
+            </ul>
+            
+            <li>Give a descriptive name to the group.</li>
+        </ul>
+        <h4>Rate the complexity of the task:</h4>
+        <ul>
+            <li>You are asked to rate your agreement to statements about your experience assessing the group.</li>
+        </ul>
+      
+        <h4 class="mt-5">Important Note:</h4>
+        <ul>
+          <li>Please do not participate in this survey using your phone as the survey elements will not display properly. If you are using a tablet, please tilt it to a horizontal view.</li>
+          <li>Please avoid using the back-button or the refreshing the page in your browser to prevent unexpected survey behavior.</li>
+        </ul>
+        <h5>Thank you for your participation!</h5>
+      </div>
+    <!-- <div class="col-md-6">
+        <img src="{% static 'images/UF_app.png' %}" class="img-fluid">
+    </div> -->
+    <a href="{% url 'survey_page' %}" class="btn btn-primary mt-3">Start survey</a>
+</main>
+
+{%endblock%}

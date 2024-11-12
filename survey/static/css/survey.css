@@ -1,0 +1,66 @@
+.page-header {
+    margin-top: 0;
+    margin-bottom: 40px;
+    padding: 20px 20px 20px 40px;
+}
+/* 
+h1,
+h2,
+h3,
+h4 {
+    font-family: 'Roboto', sans-serif;
+} */
+
+h4, h5 {
+    margin-top: 20px;
+}
+.horizontal-radio label {
+    display: inline-block;
+    margin-right: 10px; 
+}
+
+.survey-page {
+    width: 50%;
+    float: left;
+}
+
+.article-body-container {
+    border-style: solid;
+}
+
+.bg-primary {
+    background-color: #2A4765 !important;
+  }
+
+.article-label:hover {
+    background-color: #D7B17C;
+    opacity: 0.5;
+}
+
+.form-check-input:checked + .form-check-label {
+    color: rgba(130, 130, 130, 0.724); /* Change to any color you prefer */
+    text-decoration: line-through;
+}
+
+.form-check-input {
+    size: 8px;
+}
+
+input[type=radio] {
+    width: 20px;
+    height: 20px;
+}
+
+input[type=checkbox] {
+    width: 20px;
+    height: 20px;
+}
+
+.short-instruct {
+    font-size: smaller;
+    font-style: italic;
+}
+/* 
+.app-image {
+    width: 49%;
+} */

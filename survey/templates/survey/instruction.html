@@ -1,0 +1,75 @@
+{% extends "survey/base_generic.html" %}{% load static %} {%block content%}
+
+<main class="container mt-4">
+  <div class="container mt-4">
+    <h4>Introduction</h4>
+    <!-- <p class="lead">Each group of texts are assumed to have at least one common characteristic that unifies them as a cluster. It could be a theme (e.g., Football, Politics, Natural Disasters, a person, a city), or an event (e.g., a particular football match, an election, a hurricane), or it could be something more stylistic in the text, such as formality, a tone (or "sentiment"), creating an emotional response, or that he texts are argumentative. This can be hard to identify and rate, but may give a lot of value for insights into the AI models that has annotated the texts, a well as  being useful for analysis of the current news landscape.</p> -->
+
+    <p class="lead">
+      An AI model has grouped these articles together. Your task is to explore
+      and interpret the group, identifying common themes and marking any
+      articles that you feel don't fit with the rest. Your characterization
+      should focus on what unites the remaining articles in the group.
+    </p>
+    <h4 class="mt-5">Explore the Group:</h4>
+    <ul>
+      <li>Carefully read all the titles.</li>
+      <li>
+        If you're unsure what an article is about, click on the title to view
+        its full text.
+      </li>
+      <li>
+        Mark any articles you believe don't belong with the group.
+        <strong
+          >It's perfectly fine not to mark any articles if you believe they all
+          fit the group.</strong
+        >
+      </li>
+    </ul>
+    <p>
+      <strong>Note:</strong> There are no injected or "planted" articles that
+      you are expected to find. The goal is to focus on your own interpretation
+      of what fits or doesn't within the group.
+    </p>
+
+    <div class="col-md-6" id="instruct-image">
+        <img src="{% static 'images/CIPHE_instruct.jpg' %}" class="img-fluid border border-dark">
+    </div>
+
+    <h4>Characterize the group:</h4>
+    <ul>
+      <li>Give a descriptive name to the group.</li>
+      <li>Give your interpretation by answering questions about the group.</li>
+      <ul>
+        <li>Task difficulty.</li>
+        <li>I feel the group is important from a societal perspective.</li>
+        <li>
+          The group causes negative emotion such as fear, anger, sadness, or
+          something else. Excluding boredom.
+        </li>
+        <li>The group is engaging. (Here you can answer if you were bored.)</li>
+        <li>Your percieved similarity of the articles.</li>
+      </ul>
+    </ul>
+
+    <h4 class="mt-5">Important Note:</h4>
+    <ul>
+      <li>
+        Please do not participate in this survey using your phone as the survey
+        elements will not display properly. If you are using a tablet, please
+        tilt it to a horizontal view.
+      </li>
+      <li>
+        Please avoid using the back-button or refreshing the page in your
+        browser to prevent unexpected survey behavior.
+      </li>
+    </ul>
+    <h5>Thank you for your participation!</h5>
+  </div>
+
+  <a href="{% url 'survey_page' %}" class="btn btn-primary mt-3"
+    >Start survey</a
+  >
+</main>
+
+{%endblock%}
