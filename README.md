@@ -14,7 +14,6 @@ This is the repository connected to the paper "CIPHE: A Framework for Cluster In
 4. `./manage.py createsuperuser`
 5. `./manage.py import_data data/data.json`
 6. `./manage.py runserver`
-7. Copy hooks/precommit to .git
 
 A document in `data.json` should contain the fields `title`, `text` and `label`, where the label corresponds to cluster id.
 
