@@ -23,6 +23,7 @@ __pycache__
 *.json
 *.txt
 *.png
+*.pdf
 
 /survey/migrations/
 /old_databases/

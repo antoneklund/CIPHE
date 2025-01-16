@@ -5,9 +5,8 @@ from .models import (
     Page,
     Cluster,
     Article,
-    UFQuestion,
+    NameQuestion,
     LikertScaleQuestion,
-    CharacteristicsQuestion,
     ArticleQuestion,
     TaxonomyQuestion,
 )
@@ -17,8 +16,7 @@ admin.site.register(User)
 admin.site.register(Page)
 admin.site.register(Cluster)
 admin.site.register(Article)
-admin.site.register(UFQuestion)
+admin.site.register(NameQuestion)
 admin.site.register(LikertScaleQuestion)
-admin.site.register(CharacteristicsQuestion)
 admin.site.register(ArticleQuestion)
 admin.site.register(TaxonomyQuestion)
