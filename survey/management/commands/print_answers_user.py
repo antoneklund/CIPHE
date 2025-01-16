@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from survey.models import User, LikertScaleQuestion, UFQuestion, ArticleQuestion
+from survey.models import User, LikertScaleQuestion, NameQuestion, ArticleQuestion
 import ast
 from collections import defaultdict
 
@@ -26,11 +26,11 @@ class Command(BaseCommand):
 
         # Create dictionaries to store answers for each cluster
         cluster_likert_answers = defaultdict(lambda: defaultdict(list))
-        cluster_uf_answers = defaultdict(list)
+        cluster_name_answers = defaultdict(list)
         cluster_article_answers = defaultdict(list)
 
-        # Get the answers from UFQuestion and LikertScaleQuestion
-        uf_answers = UFQuestion.objects.filter(page__user_id=user_id)
+        # Get the answers from NameQuestion and LikertScaleQuestion
+        name_answers = NameQuestion.objects.filter(page__user_id=user_id)
         likert_answers = LikertScaleQuestion.objects.filter(page__user_id=user_id)
         article_answers = ArticleQuestion.objects.filter(page__user_id=user_id)
         # Group LikertScaleQuestions by clusters
@@ -43,10 +43,10 @@ class Command(BaseCommand):
             cluster_likert_answers[cluster_id]["interest"].append(likert.interest)
             cluster_likert_answers[cluster_id]["style"].append(likert.style)
 
-        # Group UFQuestion answers by clusters
-        for uf in uf_answers:
-            cluster_id = uf.page.cluster.id
-            cluster_uf_answers[cluster_id].append(uf.text_answer)
+        # Group NameQuestion answers by clusters
+        for name in name_answers:
+            cluster_id = name.page.cluster.id
+            cluster_name_answers[cluster_id].append(name.text_answer)
 
         for article_answer in article_answers:
             cluster_id = article_answer.page.cluster.id
@@ -64,7 +64,7 @@ class Command(BaseCommand):
             "----------------------------------------------------------------\n"
         )
 
-        for cluster_id in cluster_likert_answers.keys() | cluster_uf_answers.keys():
+        for cluster_id in cluster_likert_answers.keys() | cluster_name_answers.keys():
             self.stdout.write(f"\nCluster ID: {cluster_id}")
             print(f"Article Score: {cluster_article_answers[cluster_id]}")
             # Print Likert answers
@@ -84,13 +84,13 @@ class Command(BaseCommand):
                 else:
                     self.stdout.write(f" - {field.capitalize()}: No answer")
 
-            # Print UF answers
-            self.stdout.write("UFQuestion Answers:")
-            if cluster_uf_answers[cluster_id]:
-                for answer in cluster_uf_answers[cluster_id]:
+            # Print name answers
+            self.stdout.write("NameQuestion Answers:")
+            if cluster_name_answers[cluster_id]:
+                for answer in cluster_name_answers[cluster_id]:
                     self.stdout.write(f' - "{answer}"')
             else:
-                self.stdout.write(" - No UF answers")
+                self.stdout.write(" - No Name answers")
 
         self.stdout.write(
             "----------------------------------------------------------------"

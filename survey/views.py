@@ -3,32 +3,24 @@ from .models import (
     Article,
     User,
     LikertScaleQuestion,
-    UFQuestion,
+    NameQuestion,
     ArticleQuestion,
     Page,
     Survey,
     Cluster,
     TaxonomyQuestion,
 )
-from .forms import LikertScaleForm, UFForm, FTForm, TaxonomyForm
+from .forms import LikertScaleForm, NameForm, TaxonomyForm
 import random as r
 from django.middleware import csrf
 import ast
 import numpy as np
 
 
-SURVEY_ID = 1
-TOTAL_CLUSTERS = 8
-CLUSTER_SIZE = 10
-INSTRUCTION_SET = "FT"
-ARTICLE_PATH = None
-HQ_CLUSTER_IDS = [
-    1,
-    2,
-    3,
-    4,
-    7,
-]  # [11, 12, 13, 14, 17] # [44,45,46,47,50] # [1, 2, 3, 4, 7]
+SURVEY_ID = 2  # Change which survey should be live
+SAMPLE_SIZE = 10  # only for calculating the score on thank_you page
+INSTRUCTION_SET = "FT"  # Choose between FreeText "FT" and Taxonomy "TAX"
+ARTICLE_PATH = None  # TODO: work to remove
 
 
 def welcome(request):
@@ -40,13 +32,12 @@ def welcome(request):
     return render(request, "survey/welcome.html", {})
 
 
-def create_anonymous_user(prolific_id, cluster_order, article_ids):
+def create_anonymous_user(prolific_id, cluster_order):
     print("Creating new user")
     user = User()
     user.prolific_identity = prolific_id
     user.cluster_order = cluster_order
     user.current_cluster_index = 0
-    user.article_ids = article_ids
     user.save()
     return user
 
@@ -91,28 +82,7 @@ def get_clusters(survey_id):
 def setup_cluster_order(clusters):
     cluster_ids = [c.id for c in clusters]
     r.shuffle(cluster_ids)
-    # while cluster_ids[0] not in HQ_CLUSTER_IDS:
-    #     r.shuffle(cluster_ids)
     return cluster_ids
-
-
-def setup_article_sample(article_list_path=None):
-    """Article list should be a txt with ids as str ["1", "2", ... "99"]"""
-    if article_list_path is not None:
-        textfile = open(article_list_path)
-        article_ids = textfile.read()
-        textfile.close()
-        article_ids = ast.literal_eval(article_ids)
-        return article_ids
-    else:
-        all_clusters = Cluster.objects.all()
-        all_articles_ids = []
-        for cluster in all_clusters:
-            articles = Article.objects.filter(cluster=cluster)
-            article_ids = list(articles.values_list("id", flat=True))
-            article_ids = [int(a) for a in article_ids]
-            all_articles_ids.extend(article_ids)
-        return all_articles_ids
 
 
 def check_user_exists(prolific_id):
@@ -128,9 +98,8 @@ def instruction(request):
     else:
         clusters = get_clusters(survey_id=survey)
         cluster_order = setup_cluster_order(clusters)
-        article_ids = setup_article_sample(ARTICLE_PATH)
         user = create_anonymous_user(
-            request.session["prolific_id"], cluster_order, article_ids
+            request.session["prolific_id"], cluster_order
         )
     request.session["user_id"] = user.id
     return render(request, "survey/instruction.html", {"user": user})
@@ -148,14 +117,11 @@ def convert_to_bool_list(selected, all_articles):
 
 
 def save_current_page(user, request):
-    if INSTRUCTION_SET == "UF":
-        naming_form = UFForm(request.POST)
-    elif INSTRUCTION_SET == "FT":
-        naming_form = FTForm(request.POST)
+    if INSTRUCTION_SET == "FT":
+        naming_form = NameForm(request.POST)
     elif INSTRUCTION_SET == "TAX":
         naming_form = TaxonomyForm(request.POST)
     likert_form = LikertScaleForm(request.POST)
-    # characteristics_form = CharacteristicsForm(request.POST)
 
     article_ids = request.POST.getlist("article_ids")
     article_ids = str(article_ids)
@@ -165,19 +131,11 @@ def save_current_page(user, request):
         print("Page has responses")
         article_instance = ArticleQuestion.objects.get(page=page)
         likert_instance = LikertScaleQuestion.objects.get(page=page)
-        # characteristics_instance = CharacteristicsQuestion.objects.get(page=page)
 
         naming_responses = naming_form.save(commit=False)
-        if INSTRUCTION_SET == "UF":
-            naming_instance = UFQuestion.objects.get(page=page)
+        if INSTRUCTION_SET == "FT":
+            naming_instance = NameQuestion.objects.get(page=page)
             naming_instance.text_answer = naming_responses.text_answer
-            naming_instance.excluded = naming_responses.excluded
-            naming_instance.uf_choices = naming_instance.uf_choices
-        elif INSTRUCTION_SET == "FT":
-            naming_instance = UFQuestion.objects.get(page=page)
-            naming_instance.text_answer = naming_responses.text_answer
-            naming_instance.excluded = naming_responses.excluded
-            naming_instance.uf_choices = naming_instance.uf_choices
         elif INSTRUCTION_SET == "TAX":
             naming_instance = TaxonomyQuestion.objects.get(page=page)
             naming_instance.category = naming_responses.category
@@ -193,11 +151,6 @@ def save_current_page(user, request):
         likert_instance.interest = likert_responses.interest
         likert_instance.style = likert_responses.style
         likert_instance.save()
-        # characteristics_responses = characteristics_form.save(commit=False)
-        # characteristics_instance.theme = characteristics_responses.theme
-        # characteristics_instance.opinion = characteristics_responses.opinion
-        # characteristics_instance.emotion = characteristics_responses.emotion
-        # characteristics_instance.save()
     else:
         article_instance = ArticleQuestion()
         article_instance.page = page
@@ -209,9 +162,6 @@ def save_current_page(user, request):
         likert_instance = likert_form.save(commit=False)
         likert_instance.page = page
         likert_instance.save()
-        # characteristics_instance = characteristics_form.save(commit=False)
-        # characteristics_instance.page = page
-        # characteristics_instance.save()
 
 
 def load_current_page_content(user, request):
@@ -220,28 +170,18 @@ def load_current_page_content(user, request):
         return redirect("survey_page")
 
     if page_has_responses(page):
-        if INSTRUCTION_SET == "UF":
-            naming_instance = UFQuestion.objects.get(page_id=page.id)
-            naming_form = UFForm(instance=naming_instance)
-        elif INSTRUCTION_SET == "FT":
-            naming_instance = UFQuestion.objects.get(
-                page_id=page.id
-            )  # Note that FTForm and UFForm both uses UFQuestion
-            naming_form = FTForm(instance=naming_instance)
+        if INSTRUCTION_SET == "FT":
+            naming_instance = NameQuestion.objects.get(page_id=page.id)
+            naming_form = NameForm(instance=naming_instance)
         elif INSTRUCTION_SET == "TAX":
             naming_instance = TaxonomyQuestion.objects.get(page_id=page.id)
             naming_form = TaxonomyForm(instance=naming_instance)
 
         likert_instance = LikertScaleQuestion.objects.get(page_id=page.id)
         likert_form = LikertScaleForm(instance=likert_instance)
-
-        # characteristics_instance = CharacteristicsQuestion.objects.get(page_id=page.id)
-        # characteristics_form = CharacteristicsForm(instance=characteristics_instance)
-
         cluster_order = ast.literal_eval(user.cluster_order)
         cluster_id = cluster_order[user.current_cluster_index]
-        article_ids = ast.literal_eval(user.article_ids)
-        articles = Article.objects.filter(cluster_id=cluster_id, id__in=article_ids)
+        articles = Article.objects.filter(cluster_id=cluster_id)
         selected_articles = ast.literal_eval(
             ArticleQuestion.objects.get(page_id=page.id).selected
         )
@@ -252,14 +192,13 @@ def load_current_page_content(user, request):
             article.checkbox_bool = checkbox_bool
         token = csrf.get_token(request)
         request.session["form_token"] = token
-        progress_percentage = (user.current_cluster_index / TOTAL_CLUSTERS) * 100
+        progress_percentage = (user.current_cluster_index / len(cluster_order)) * 100
         return render(
             request,
             "survey/survey_page.html",
             {
                 "articles": articles,
                 "likert_form": likert_form,
-                # "characteristics_form": characteristics_form,
                 "naming_form": naming_form,
                 "user": user,
                 "form_token": token,
@@ -283,19 +222,15 @@ def load_new_page(user, request):
     except IndexError:
         return redirect("thank_you")
     likert_form = LikertScaleForm()
-    # characteristics_form = CharacteristicsForm()
-    if INSTRUCTION_SET == "UF":
-        naming_form = UFForm()
-    elif INSTRUCTION_SET == "FT":
-        naming_form = FTForm()
+    if INSTRUCTION_SET == "FT":
+        naming_form = NameForm()
     elif INSTRUCTION_SET == "TAX":
         naming_form = TaxonomyForm()
-    article_ids = ast.literal_eval(user.article_ids)
-    articles = Article.objects.filter(cluster_id=current_cluster_id, id__in=article_ids)
+    articles = Article.objects.filter(cluster_id=current_cluster_id)
     token = csrf.get_token(request)
     request.session["form_token"] = token
     progress_percentage = np.round(
-        (user.current_cluster_index / TOTAL_CLUSTERS) * 100, decimals=1
+        (user.current_cluster_index / len(cluster_order)) * 100, decimals=1
     )
     print(articles)
     return render(
@@ -304,7 +239,6 @@ def load_new_page(user, request):
         {
             "articles": articles,
             "likert_form": likert_form,
-            # "characteristics_form": characteristics_form,
             "naming_form": naming_form,
             "user": user,
             "form_token": token,
@@ -350,7 +284,7 @@ def calculate_model_score(article_responses):
     scores = []
     for response in article_responses:
         converted_response = ast.literal_eval(response.selected)
-        scores.append(1 - (len(converted_response) / CLUSTER_SIZE))
+        scores.append(1 - (len(converted_response) / SAMPLE_SIZE))
     final_score = np.mean(scores)
     return final_score, scores
 
@@ -360,20 +294,16 @@ def thank_you(request):
     if request.method == "POST":
         return handle_thank_you_back_button(user, request)
     survey = Survey.objects.get(id=SURVEY_ID)
-    # pages = Page.objects.filter(user=user)
 
-    uf_responses = UFQuestion.objects.filter(page__user=user)
+    name_responses = NameQuestion.objects.filter(page__user=user)
     if INSTRUCTION_SET == "TAX":
-        uf_responses = TaxonomyQuestion.objects.filter(page__user=user)
+        name_responses = TaxonomyQuestion.objects.filter(page__user=user)
 
     likert_responses = LikertScaleQuestion.objects.filter(page__user=user)
-    # characteristics_responses = CharacteristicsQuestion.objects.filter(page__user=user)
 
     article_responses = ArticleQuestion.objects.filter(page__user=user)
     total_score, detailed_scores = calculate_model_score(article_responses)
-    responses = zip(
-        uf_responses, likert_responses, detailed_scores
-    )  # characteristics_responses,
+    responses = zip(name_responses, likert_responses, detailed_scores)
 
     progress_percentage = 100.0
 

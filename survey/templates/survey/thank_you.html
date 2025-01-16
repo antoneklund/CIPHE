@@ -13,10 +13,10 @@
 
       <h2>Detailed Responses:</h2>
       <ul>
-        {% for uf_response, likert_response, score in responses %} <!-- characteristics_response,  -->
-        <h6>Group name: {{ uf_response.text_answer }}</h6>
-        <!-- <p>Category: {{ uf_response.category }}</p> -->
-        <!-- <p>Comment for excluding: {{ uf_response.excluded }}</p> -->
+        {% for name_response, likert_response, score in responses %} <!-- characteristics_response,  -->
+        <h6>Group name: {{ name_response.text_answer }}</h6>
+        <!-- <p>Category: {{ name_response.category }}</p> -->
+        <!-- <p>Comment for excluding: {{ name_response.excluded }}</p> -->
         <li>
           Inclusion: {{ likert_response.inclusion }}, Naming: {{ likert_response.naming }}, Opinion: {{ likert_response.opinion}}, Negative emotion: {{ likert_response.emotion }}, Engaging: {{ likert_response.interest }}, Similarity: {{ likert_response.style }}
         </li>

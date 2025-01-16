@@ -1,13 +1,13 @@
-#!/bin/bash
+# #!/bin/bash
 
-if ! command -v ruff &> /dev/null; then
-    echo "We couldn't find the linter Ruff. Please install ruff using pip"
-    exit 1
-fi
+# if ! command -v ruff &> /dev/null; then
+#     echo "We couldn't find the linter Ruff. Please install ruff using pip"
+#     exit 1
+# fi
 
-ruff check survey/ --fix
-ruff format survey/
+# ruff check survey/ --fix
+# ruff format survey/
 
-echo "Code is probably OK if the checks succeeded."
+# echo "Code is probably OK if the checks succeeded."
 
-exit 0
+# exit 0

@@ -15,14 +15,11 @@ class User(models.Model):
     cluster_order = models.CharField(
         max_length=200, default=[], validators=[int_list_validator]
     )
-    article_ids = models.CharField(
-        max_length=4096, default=[], validators=[int_list_validator]
-    )
 
 
 class Cluster(models.Model):
     survey = models.ForeignKey(Survey, on_delete=models.SET_NULL, null=True)
-    # original_cluster = models.IntegerField(default=0)
+    original_cluster = models.IntegerField(default=0)
 
 
 class Page(models.Model):
@@ -38,14 +35,9 @@ class Article(models.Model):
     body = models.CharField(max_length=1000)
 
 
-class UFQuestion(models.Model):
+class NameQuestion(models.Model):
     page = models.ForeignKey(Page, on_delete=models.SET_NULL, null=True)
-    CHOICES = [("event", "Event"), ("theme", "Theme"), ("other", "Other")]
-    uf_choices = models.CharField(
-        max_length=20, choices=CHOICES, blank=False, null=True
-    )
-    text_answer = models.CharField(max_length=50, null=True, default="")
-    excluded = models.CharField(max_length=200, null=True, default="None")
+    text_answer = models.CharField(max_length=200, null=True, default="")
 
 
 class TaxonomyQuestion(models.Model):
@@ -73,20 +65,6 @@ class TaxonomyQuestion(models.Model):
         max_length=30, choices=CATEGORIES, blank=False, null=True
     )
     text_answer = models.CharField(max_length=200, null=True, default="")
-
-
-class CharacteristicsQuestion(models.Model):
-    page = models.ForeignKey(Page, on_delete=models.SET_NULL, null=True)
-    CHOICES = [
-        ("strongly_disagree", "Strongly Disagree"),
-        ("disagree", "Disagree"),
-        ("neutral", "Neutral"),
-        ("agree", "Agree"),
-        ("strongly_agree", "Strongly Agree"),
-    ]
-    theme = models.CharField(max_length=20, choices=CHOICES, null=True, blank=True)
-    opinion = models.CharField(max_length=20, choices=CHOICES, null=True, blank=True)
-    emotion = models.CharField(max_length=20, choices=CHOICES, null=True, blank=True)
 
 
 class LikertScaleQuestion(models.Model):

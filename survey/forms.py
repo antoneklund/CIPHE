@@ -1,27 +1,15 @@
 from django import forms
 from .models import (
     LikertScaleQuestion,
-    UFQuestion,
+    NameQuestion,
     ArticleQuestion,
     TaxonomyQuestion,
-    CharacteristicsQuestion,
 )
 
 
-class UFForm(forms.ModelForm):
+class NameForm(forms.ModelForm):
     class Meta:
-        model = UFQuestion
-        fields = ["uf_choices", "text_answer", "excluded"]
-        widgets = {
-            "uf_choices": forms.RadioSelect(attrs={"class": "horizontal-radio"}),
-            "text_answer": forms.TextInput(attrs={"class": "freetext"}),
-            "excluded": forms.TextInput(attrs={"class": "freetext"}),
-        }
-
-
-class FTForm(forms.ModelForm):
-    class Meta:
-        model = UFQuestion
+        model = NameQuestion
         fields = ["text_answer"]
         widgets = {
             "text_answer": forms.TextInput(attrs={"class": "freetext"}),
@@ -36,35 +24,6 @@ class TaxonomyForm(forms.ModelForm):
             "text_answer": forms.TextInput(attrs={"class": "freetext"}),
             "category": forms.Select(attrs={"class": "category"}),
         }
-
-
-class CharacteristicsForm(forms.ModelForm):
-    LIKERT_CHOICES = [
-        ("strongly_disagree", "Strongly Disagree"),
-        ("disagree", "Disagree"),
-        ("neutral", "Neutral"),
-        ("agree", "Agree"),
-        ("strongly_agree", "Strongly Agree"),
-    ]
-    theme = forms.ChoiceField(
-        label="... a common topic, theme or event. (Stock market, Politics, Olympics)",
-        choices=LIKERT_CHOICES,
-        widget=forms.RadioSelect(attrs={"class": "horizontal-radio"}),
-    )
-    opinion = forms.ChoiceField(
-        label="... conveying the author's opinion about something. (debate, review, perspective)",
-        choices=LIKERT_CHOICES,
-        widget=forms.RadioSelect(attrs={"class": "horizontal-radio"}),
-    )
-    emotion = forms.ChoiceField(
-        label="... creating an emotional response. (heartwarming, anger, fear)",
-        choices=LIKERT_CHOICES,
-        widget=forms.RadioSelect(attrs={"class": "horizontal-radio"}),
-    )
-
-    class Meta:
-        model = CharacteristicsQuestion
-        fields = ["theme", "opinion", "emotion"]
 
 
 class LikertScaleForm(forms.ModelForm):
