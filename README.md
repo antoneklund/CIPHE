@@ -28,7 +28,7 @@ A User object is created for each user id string that is submitted on the welcom
 #### Analysis
 The data is stored in db.sqlite3. 
 * To get the CIPHE metrics for a survey and e.g. users 1, 2, and 42, run `./manage.py ciphe_metrics 1 2 42`.
-* To inspect the responses from a single User, run `./manage.py print_answers_user.py 42`.
+* To inspect the responses from a single User, run `./manage.py print_answers_user 42`.
 The functions for plotting can be found in `utils/plotting/` and the file `print_CIPHE.py`. To convert the database to a plottable file see `sql_to_json.py`.
 
 
