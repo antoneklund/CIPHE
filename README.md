@@ -1,4 +1,4 @@
-# Cluster Evaluation Survey Application
+# CIPHE: Cluster Interpretation and Precision from Human Exploration
 
 **CIPHE is a survey platform for collecting human interpretation data of document clusters. It is built on Django and contain metrics for calculating cluster precision and participant agreement. It can be hosted on a server to collect data from experts or crowdsourcing workers to gather data for human evaluation of document clusters.**
 
