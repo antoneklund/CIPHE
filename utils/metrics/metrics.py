@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import ast
+from scipy.special import binom
 from nltk.metrics import agreement as agree
 import torch
 from sentence_transformers import SentenceTransformer
@@ -72,7 +73,7 @@ def calculate_CIPHE_precision(cluster):
 # Calculate IA
 def calculate_CIPHE_interpretation_agreement(cluster):
     A_inc = calculate_agreement_inclusion(cluster)
-    # A_corr = calculate_inclusion_correlation(cluster)
+    # A_corr = calculate_agreement_inclusion_old(cluster)
     # A_seg = calculate_agreement_segmentation(cluster)
     A_name = calculate_agreement_naming(cluster)
     L_inc = calculate_likert_inclusion(cluster)
@@ -82,7 +83,7 @@ def calculate_CIPHE_interpretation_agreement(cluster):
 
 
 # Calculate A_inc
-def calculate_agreement_inclusion(cluster):
+def calculate_agreement_inclusion_old(cluster):
     def create_code_mapping_dict(codes):
         mapping_dict = {}
         for i, code in enumerate(codes):
@@ -112,9 +113,42 @@ def calculate_agreement_inclusion(cluster):
                 responses.append((str(user_id), str((10*survey_id)+article_id), article_response))
         A_inc = agree.AnnotationTask(responses).avg_Ao()
         A_inc_all.append(A_inc)
-    A_inc = np.mean(A_inc_all)
+    A_inc = (np.mean(A_inc_all) -0.5)/(0.5)
     return A_inc
 
+
+# Calculate A_inc Paper III
+def calculate_agreement_inclusion(cluster):
+    selected = cluster.article_answers["selected"]
+    all_articles_in_cluster = cluster.article_answers["all_articles"]
+    document_positive_counts = {}
+    document_seen_counts = {}
+    for all_articles in all_articles_in_cluster:
+        for document in all_articles:
+            document_positive_counts[document] = 0
+            document_seen_counts[document] = 0
+    for s in selected:
+        selected_processed = ast.literal_eval(s)
+        selected_processed = [int(s) for s in selected_processed]
+        for d in selected_processed:
+            document_positive_counts[d] +=1
+    for all_articles in all_articles_in_cluster:
+        all_articles_processed = all_articles
+        all_articles_processed = [int(s) for s in all_articles_processed]
+        for d in all_articles_processed:
+            document_seen_counts[d] +=1        
+    # print(document_positive_counts)
+    # print(document_seen_counts)
+    agreements = []
+    for k in document_positive_counts.keys():
+        P = document_positive_counts[k]
+        n = document_seen_counts[k] 
+        a = binom(P, 2) + binom(n-P, 2)
+        a_max = binom(n, 2)
+        a_min = binom(np.floor(n/2), 2) + binom(np.ceil(n/2), 2)
+        agreements.append((a-a_min)/(a_max-a_min))
+    A_inc = np.mean(agreements)
+    return A_inc
 
 # Calculate A_corr
 def calculate_inclusion_correlation(cluster):
